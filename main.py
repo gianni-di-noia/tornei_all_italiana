@@ -117,9 +117,9 @@ class CheckPage(BaseHandler):
 class Checknum(BaseHandler):
     def post(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
-        n = self.request.get('telefono')
-        q = Tennisti.query(Tennisti.torneo == torneo.key)
-        q = q.filter(Tennisti.telefono == n)
+        telefono = self.request.get('telefono')
+        q = Tennisti.query(Tennisti.torneo == torneo.key,
+                           Tennisti.telefono == telefono)
         if q.get():
             tennisti = Tennisti.query(Tennisti.torneo == torneo.key)
             tennisti = tennisti.order(-Tennisti.punti)
