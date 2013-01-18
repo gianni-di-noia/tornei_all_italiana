@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+<div class="row-fluid">
+<div class="well">
+  <table class="table">
+  <thead></thead>
+  <tbody>
+  {% for i in tornei %}
+  <tr>
+    <td>{{i.organiz}} / {{i.anno}} / match: {{i.disputati}}/{{i.match_tot}}</td>
+    <td> <a class="btn" href="/t?id={{i.key.id()}}" ><i class="icon-calendar"></i> Giornate</a> </td>
+    <td> <a class="btn" href="/c?id={{i.key.id()}}" ><i class="icon-tasks"></i> Classifica</a> </td>
+    <td> <a class="btn" href="/k?id={{i.key.id()}}" ><i class="icon-user"></i> Tennisti</a> </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+</div>
+</div>
+<div class="row-fluid">
+<div class="well">
+  <label>dai campi..</label>
+  <table class="table table-condensed">
+  <thead>
+    <th colspan="4"></th>
+  </thead>
+  <tbody>
+    {% for m in matchs %}
+    <tr>
+      <td>{{m.incasa.get().squadra}}</td>
+      <td>{{m.ospite.get().squadra}}</td>
+      <td>{{m.incasa1}} - {{m.ospite1}}</td>
+      <td>{{m.incasa2}} - {{m.ospite2}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  </table>
+</div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+<div class="row-fluid">
+  <table class="table table-condensed">
+    <caption><b>Giornata {{ g.giornata }} </b></caption>
+    <thead>
+      <th>In casa</th>
+      <th>Punteggio</th>
+      <th>Ospite</th>
+      <th>1 set</th>
+      <th>2 set</th>
+      <th>Azioni</th>
+    </thead>
+    <tbody>
+    {% for m in g.match_set %}
+    <form action="/add?id={{ m.key.id() }}" class="form-inline" method="POST" >
+    {% if m.disputa %}
+    <tr class="success">
+    {%else%}
+    <tr>
+    {%endif%}
+      <td><b>{{m.incasa.get().squadra}}</b> <br> {{m.incasa.get().nome}}</td>
+      <td><b>{{m.incasaP}} - {{m.ospiteP}}</b></td>
+      <td><b>{{m.ospite.get().squadra}}</b> <br> {{m.ospite.get().nome}}</td>
+      <td>
+        <input type="text" value="{{m.incasa1}}" class="input input-mini" name="incasa1" allowBlank="true">
+        <input type="text" value="{{m.ospite1}}" class="input input-mini" name="ospite1" allowBlank="true">
+      </td>
+      <td>
+        <input type="text" value="{{m.incasa2}}" class="input input-mini" name="incasa2" allowBlank="true">
+        <input type="text" value="{{m.ospite2}}" class="input input-mini" name="ospite2" allowBlank="true">
+      </td>
+      <td><button type="submit" class="btn"><i class="icon-ok"></i></button></td>
+    </tr>
+    </form>
+    {% endfor %}
+    </tbody>
+  </table>
+  <ul class="pager">
+    {%if prev %}
+    <li class="previous">
+      <a href="/g?id={{prev}}">&larr; giornata {{ g.giornata - 1 }}</a>
+    </li>
+    {%endif%}
+    {%if next %}
+    <li class="next">
+      <a href="/g?id={{next}}">giornata {{ g.giornata + 1 }} &rarr;</a>
+    </li>
+    {%endif%}
+  </ul>
+</div>
+</div>
+
+{% endblock %}

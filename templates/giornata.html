@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+<div class="row-fluid ">
+  <table class="table table-condensed">
+    <caption><b>Giornata {{ g.giornata }}</b></caption>
+    <thead>
+    <tr class="">
+      <th>In casa</th>
+      <th>Punti</th>
+      <th>Ospite</th>
+      <th>1set</th>
+      <th>2set</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for m in g.match_set %}
+    {% if m.disputa == True %}
+    <tr class="success">
+    {% else %}
+    <tr class="">
+    {%endif%}
+      <td><b>{{m.incasa.get().squadra}}</b></td>
+      <td>{{m.incasaP}} - {{m.ospiteP}}</td>
+      <td><b>{{m.ospite.get().squadra}}</b></td>
+      <td>{{m.incasa1}} - {{m.ospite1}}</td>
+      <td>{{m.incasa2}} - {{m.ospite2}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <ul class="pager">
+    {%if prev %}
+    <li class="previous">
+      <a href="/g?id={{prev}}">&larr; giornata {{ g.giornata - 1 }}</a>
+    </li>
+    {%endif%}
+    {%if next %}
+    <li class="next">
+      <a href="/g?id={{next}}">giornata {{ g.giornata + 1 }} &rarr;</a>
+    </li>
+    {%endif%}
+  </ul>
+</div>
+</div>
+
+{% endblock %}

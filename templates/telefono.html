@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+<div class="row-fluid">
+<table class="table table-condensed">
+<caption><b>Partecipanti al torneo</b></caption>
+  <thead>
+  <tr>
+    <th>Squadra</th><th>Nome</th><th>Telefono</th><th>email</th><th>Punteggio</th>
+  </tr>
+  </thead>
+  <tbody>
+  {% for t in tennisti %}
+  <tr>
+    <td>{{t.squadra}}</td><td>{{t.nome}}</td><td>{{t.telefono}}</td><td>{{t.email}}</td><td>{{t.punti}}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+</div>
+{% endblock %}

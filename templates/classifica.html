@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-narrow">
+  <div class="row-fluid">
+  <table class="table table-condensed">
+    <thead>
+    <tr>
+      <th>Squadra</th>
+      <th>Punti</th>
+      <th>Giocate</th>
+      <th>Vinte</th>
+      <th>Pareggiate</th>
+      <th>Perse</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for t in tennisti %}
+      <tr>
+        <td>{{t.squadra}}</td>
+        <td><b>{{t.punti}}</b></td>
+        <td><b>{{t.disputati}}</b></td>
+        <td>{{t.vinti}}</td>
+        <td>{{t.pareggiati}}</td>
+        <td>{{t.persi}}</td>
+      </tr>
+      {% endfor %}
+      <tr style="visibility:hidden">
+        <td><input type="text" class="span12"></td>
+        <td><input type="text" class="span12"></td>
+        <td><input type="text" class="span12"></td>
+        <td><input type="text" class="span12"></td>
+        <td><input type="text" class="span12"></td>
+        <td><input type="text" class="span12"></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

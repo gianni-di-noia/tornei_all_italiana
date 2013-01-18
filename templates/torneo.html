@@ -1,0 +1,50 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+  <div class="row-fluid">
+    <div class="span6 well">
+    <table class="table table-condensed">
+      <caption><b>Andata</b></caption>
+      <thead>
+        <tr>
+          <th>Giorn.</th>
+          <th>match</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for g in t.andata %}
+        <tr>
+          <td>{{g.giornata}}</td>
+          <td>{{g.disputate}}/10</td>
+          <td><a class="btn btn-link btn-mini" href="/g?id={{g.key.id()}}" > apri</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+
+    <div class="span6 well">
+    <table class="table table-condensed">
+      <caption><b>Ritorno</b></caption>
+      <thead>
+        <tr>
+          <th>Giorn.</th>
+          <th>match</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for g in t.ritorno %}
+        <tr>
+          <td>{{g.giornata}}</td>
+          <td>{{g.disputate}}/10</td>
+          <td><a class="btn btn-link btn-mini" href="/g?id={{g.key.id()}}" > apri</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

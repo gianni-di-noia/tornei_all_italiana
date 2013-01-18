@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-narrow">
+<div class="row-fluid">
+<div class=" well">
+  <form method="post" action="/checknum?id={{t.key.id()}}">
+    <div> <h4>Attenzione</h4> </div>
+    <div>
+      <p>Per la vostra privacy queste informazioni sono disponibili solo ai partecipanti.</p>
+      <p>Inserisci il numero di telefono con cui ti sei iscritto al torneo,<br> ad esempio: 3289876543</p>
+      <input class="input" name="telefono" type="text" >
+    </div>
+    <div>
+      <a class="btn" href="/" >Annulla</a>
+      <input class="btn btn-primary" type="submit" value="Invia"/>
+    </div>
+  </form>
+</div>
+</div>
+</div>
+{% endblock %}

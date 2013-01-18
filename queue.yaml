@@ -1,0 +1,12 @@
+# total_storage_limit: 120M
+
+queue:
+
+- name: default
+  rate: 20/s
+  bucket_size: 40
+
+- name: worker
+  rate: 20/s
+  bucket_size: 40
+  target: worker
