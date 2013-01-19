@@ -16,6 +16,11 @@ class Tornei(ndb.Expando):
                            Match.disputa == True).count()
 
     @property
+    def tennisti_set(self):
+        qry = Tennisti.query(Tennisti.torneo == self.key)
+        return qry.order(-Tennisti.punti)
+
+    @property
     def match_set(self):
         return Match.query(Match.torneo == self.key)
 

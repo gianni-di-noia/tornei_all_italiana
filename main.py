@@ -9,8 +9,6 @@ from models import *
 from google.appengine.api import users
 from google.appengine.ext import deferred
 
-debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
-
 
 def dtf(value, format='%d-%m-%Y'):
     return value.strftime(format)
@@ -46,24 +44,19 @@ class MainPage(BaseHandler):
         matchs = Match.query(Match.disputa == True)
         matchs = matchs.order(-Match.timestamp)
         matchs = matchs.fetch(10)
-        self.response.set_cookie('torneo', 'home')
         self.generate('home.html', {'matchs': matchs})
 
 
 class TorneoPage(BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
-        self.response.set_cookie('torneo', '%s' % torneo.id)
         self.generate('torneo.html', {'t': torneo})
 
 
 class Classifica(BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
-        tennisti = Tennisti.query(Tennisti.torneo == torneo.key)
-        tennisti = tennisti.order(-Tennisti.punti)
-        self.response.set_cookie('torneo', '%s' % torneo.id)
-        self.generate('classifica.html', {'tennisti': tennisti})
+        self.generate('classifica.html', {'t': torneo})
 
 
 class GiornataPage(BaseHandler):
@@ -82,14 +75,13 @@ class GiornataPage(BaseHandler):
         values = {
         'g': giornata,
         'next': next,
-        'prev': prev
+        'prev': prev,
+        't': giornata.torneo.get()
         }
         if users.is_current_user_admin():
-            self.response.set_cookie('torneo', '%s' % giornata.torneo.id())
-            self.generate('form.html', values)
+            self.generate('g_edit.html', values)
         else:
-            self.response.set_cookie('torneo', '%s' % giornata.torneo.id())
-            self.generate('giornata.html', values)
+            self.generate('g_view.html', values)
 
 
 class EditTennisti(BaseHandler):
@@ -105,13 +97,11 @@ class EditTennisti(BaseHandler):
 
 class CheckPage(BaseHandler):
     def get(self):
-        t = Tornei.get_by_id(int(self.request.get('id')))
+        torneo = Tornei.get_by_id(int(self.request.get('id')))
         if users.is_current_user_admin():
-            tennisti = Tennisti.query(Tennisti.torneo == t.key)
-            tennisti = tennisti.order(-Tennisti.punti)
-            self.generate('form_t.html', {'tennisti': tennisti})
+            self.generate('ten_edit.html', {'t': torneo})
         else:
-            self.generate('check.html', {'t': t})
+            self.generate('check.html', {'t': torneo})
 
 
 class Checknum(BaseHandler):
@@ -121,10 +111,7 @@ class Checknum(BaseHandler):
         q = Tennisti.query(Tennisti.torneo == torneo.key,
                            Tennisti.telefono == telefono)
         if q.get():
-            tennisti = Tennisti.query(Tennisti.torneo == torneo.key)
-            tennisti = tennisti.order(-Tennisti.punti)
-            self.response.set_cookie('torneo', '%s' % torneo.id)
-            self.generate('telefono.html', {'tennisti': tennisti})
+            self.generate('ten_view.html', {'t': torneo})
         else:
             self.redirect('/')
 
@@ -152,14 +139,6 @@ class Admin(BaseHandler):
         self.generate('admin.html', {})
 
 
-class get_mynav(webapp2.RequestHandler):
-    def get(self):
-        torneo = Tornei.get_by_id(int(self.request.get('id')))
-        template = jinja_environment.get_template('mynav.html')
-        html = template.render({'t_id': torneo.id})
-        self.response.write(html)
-
-
 class Creatorneo(BaseHandler):
     def post(self):
         torneo = Tornei()
@@ -169,7 +148,6 @@ class Creatorneo(BaseHandler):
         torneo.anno = int(self.request.get('anno'))
         torneo.put()
         deferred.defer(popola_torneo, torneo.key, _queue='worker')
-        self.response.set_cookie('torneo', '%s' % torneo.id)
         self.redirect(self.request.referer)
 
 
@@ -248,6 +226,7 @@ def validate(x):
     return int(x)
 
 
+debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/c', Classifica),
@@ -259,7 +238,6 @@ app = webapp2.WSGIApplication([
     ('/edit_t', EditTennisti),
     ('/admin', Admin),
     ('/admin/creatorneo', Creatorneo),
-    ('/get_mynav', get_mynav),
     ], debug=debug)
 
 

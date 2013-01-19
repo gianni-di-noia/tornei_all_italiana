@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block mynav %} {% include 'mynav.html' %} {% endblock %}
 {% block content %}
 
 <div class="container-narrow">
@@ -15,14 +16,14 @@
     </tr>
     </thead>
     <tbody>
-      {% for t in tennisti %}
+      {% for ten in t.tennisti_set %}
       <tr>
-        <td>{{t.squadra}}</td>
-        <td><b>{{t.punti}}</b></td>
-        <td><b>{{t.disputati}}</b></td>
-        <td>{{t.vinti}}</td>
-        <td>{{t.pareggiati}}</td>
-        <td>{{t.persi}}</td>
+        <td>{{ten.squadra}}</td>
+        <td><b>{{ten.punti}}</b></td>
+        <td><b>{{ten.disputati}}</b></td>
+        <td>{{ten.vinti}}</td>
+        <td>{{ten.pareggiati}}</td>
+        <td>{{ten.persi}}</td>
       </tr>
       {% endfor %}
       <tr style="visibility:hidden">
