@@ -10,14 +10,14 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-- kind: Giornate
+- kind: Comment
   properties:
-  - name: torneo
-  - name: turno
-  - name: giornata
+  - name: post
+  - name: create
 
 - kind: Giornate
   properties:
+  - name: torneo
   - name: turno
   - name: giornata
 
@@ -25,6 +25,19 @@ indexes:
   properties:
   - name: disputa
   - name: timestamp
+    direction: desc
+
+- kind: Post
+  properties:
+  - name: published
+  - name: create
+    direction: desc
+
+- kind: Post
+  properties:
+  - name: published
+  - name: tags
+  - name: create
     direction: desc
 
 - kind: Tennisti

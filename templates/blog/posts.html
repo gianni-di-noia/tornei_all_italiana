@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<div class="row-fluid">
+  {% for p in posts %}
+  <div class="lead text-success"><a href="/blog/post/{{p.id}}">{{p.title|truncate(60)}}</a></div>
+  <div>{{p.content|truncate(300, end='...')}}</div>
+  {% if p.href and p.href != 'None' %}
+  <div>via {{p.href|urlize(60)}}</div>
+  {% endif %}
+  <div>{% include "blog/controls.html" %}</div>
+  <hr>
+  {% endfor %}
+</div>
+{% if c %}
+<div class="well well-small">
+<a class="btn btn-block" href="?c={{c}}" type="button">more...</a>
+</div>
+{% endif %}
+{% endblock %}

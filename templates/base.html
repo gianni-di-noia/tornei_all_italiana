@@ -4,22 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" href="static/favicon.ico">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Antic+Slab" type="text/css">
   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css" rel="stylesheet">
   <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap-responsive.min.css" rel="stylesheet">
+  <link href="static/style.css" rel="stylesheet">
   <link rel="icon" type="image/png" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/img/glyphicons-halflings.png" />
-
   <title>{% block title %}{{ brand }}{% endblock %}</title>
-
-  <style>
-    body { padding-top: 50px; }
-    @media (max-width: 979px) {
-      body { padding-top: 0; }
-    }
-    .container-narrow {
-      margin: 0 auto;
-      max-width: 767px;
-    }
-  </style>
 </head>
 <body>
 <div class="navbar navbar-fixed-top">
@@ -37,6 +27,7 @@
       </div>
       <div class="nav-collapse">
         <ul class="nav pull-right">
+          <li ><a href="/blog/">blog</a></li>
           {% if admin %}
           <li ><a href="/admin">Admin</a></li>
           {% endif %}

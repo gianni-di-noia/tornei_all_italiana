@@ -1,0 +1,17 @@
+<small>
+  <strong>{{p.create|dtf}}</strong> ·
+  <strong>{{p.comments.count()}} comments</strong> ·
+  {% if p.tags != [] %}
+  <strong>tags:</strong>
+  {%for tag in p.tags%}
+  <a class="text-success" href="/blog/tag/{{ tag.id() }}">{{ tag.id() }}</a> ·
+  {%endfor%}
+  {%endif%}
+</small>
+<small class="pull-right">
+  {% if admin %}
+  <a href="/blog/admin/edit/{{p.id}}" class="text-info">edit</a>
+  <a href="/blog/admin/publish/{{p.id}}" class="text-error">
+    {% if p.published == True %} unpub {% else %} pub {% endif %}</a>
+  {% endif %}
+</small>

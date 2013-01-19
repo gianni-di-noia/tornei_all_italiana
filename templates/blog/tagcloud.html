@@ -1,0 +1,8 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<div class="row-fluid">
+  {% for tag in tags %}
+  <a class="green" href="../tag/{{ tag.id }}">{{ tag.id }}</a>
+  {% endfor %}
+</div>
+{% endblock %}

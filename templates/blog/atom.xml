@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:base="{{config.path}}" xml:lang="it">
+  <link rel="self" type="application/atom+xml" href="{{config.path}}/atom" />
+  <title type="text">{{config.domain}} feed</title>
+  <rights type="html"> &lt;p>Copyright 2013, {{config.editor}}&lt;/p> </rights>
+  <id>tag:{{config.email}},2013-01-04:{{config.path}}/atom</id>
+  <updated>{{update|dtfeed}}</updated>
+  {% for p in posts %}
+  <entry>
+    <title>{{p.title}}</title>
+    <link rel="alternate" type="text/html" href="{{config.path}}/post/{{p.id}}" />
+    <id>tag:{{config.domain}},{{p.create|dtitem}}:post:{{p.id}}</id>
+    <published>{{p.create|dtfeed}}</published>
+    <updated>{{p.update|dtfeed}}</updated>
+    <author>
+      <name>{{config.editor}}</name>
+      <uri>{{config.path}}</uri>
+      <email>{{config.email}}</email>
+    </author>
+    <content type="html">
+        {% if p.href and p.href != 'None' %}
+        {{p.content|e + "<br> via " + p.href|urlize}}
+        {% else %}
+        {{p.content|e}}
+        {% endif %}
+    </content>
+  </entry>
+  {% endfor %}
+</feed>

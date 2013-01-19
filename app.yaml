@@ -17,6 +17,13 @@ handlers:
   upload: static/favicon\.ico
   mime_type: image/x-icon
 
+- url: /blog.*
+  script: blog.app
+
+- url: /blog/admin/.*
+  script: blog.app
+  login: admin
+
 - url: /admin/.*
   script: main.app
   login: admin

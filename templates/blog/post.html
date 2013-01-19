@@ -1,0 +1,49 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<div class="row-fluid">
+  <div class="lead text-success">{{p.title}}</div>
+  <div>{{p.content}}</div>
+  {% if p.href and p.href != 'None' %}
+  <small>via {{p.href|urlize(60)}}</small>
+  {% endif %}
+  <div>{% include "blog/controls.html" %}</div>
+  {% if p.comments.get() %}
+  <hr>
+  {% for c in p.comments %}
+  <p>
+    <a href="{{c.url}}" class="text-success"><b>{{c.name}}</b></a> <small>{{ c.create|dtf }}</small>
+  </p>
+  <p>{{c.comment}}</p>
+  {% endfor %}
+  {% endif %}
+</div>
+<hr>
+<div class="row-fluid">
+  <form method="post" action="/blog/comment/{{p.id}}" class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="name">name</label>
+      <div class="controls">
+        <input type="text" name="name" value="name" class="input-block-level">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="url">url</label>
+      <div class="controls">
+        <input type="text" name="url" value="http:\\" class="input-block-level">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="comment">comment</label>
+      <div class="controls">
+        <textarea rows="3" name="comment" class="input-block-level"></textarea>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+         <button type="submit" class="btn pull-right">send</button>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block title %} · {{p.title}} {% endblock %}
