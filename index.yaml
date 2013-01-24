@@ -45,3 +45,18 @@ indexes:
   - name: torneo
   - name: punti
     direction: desc
+
+- kind: Tennisti
+  properties:
+  - name: torneo
+  - name: punti
+    direction: desc
+  - name: disputati
+
+- kind: Tennisti
+  properties:
+  - name: torneo
+  - name: punti
+    direction: desc
+  - name: disputati
+    direction: desc

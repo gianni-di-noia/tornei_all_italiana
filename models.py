@@ -18,7 +18,7 @@ class Tornei(ndb.Expando):
     @property
     def tennisti_set(self):
         qry = Tennisti.query(Tennisti.torneo == self.key)
-        return qry.order(-Tennisti.punti)
+        return qry.order(-Tennisti.punti, Tennisti.disputati)
 
     @property
     def match_set(self):

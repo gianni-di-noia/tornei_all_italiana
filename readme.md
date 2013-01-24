@@ -11,7 +11,6 @@ Librerie open source utilizzate
 - Twitter Bootstrap [github](https://github.com/twitter/bootstrap)
 - la versione in python dell'algoritmo di Berger [bpaste](http://bpaste.net/show/70980/)
 
-
 Copyright and license
 ---
 Copyright 2013  [@presveva](https://github.com/presveva)

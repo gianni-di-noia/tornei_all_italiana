@@ -4,7 +4,6 @@
 import os
 import webapp2
 import jinja2
-import random
 from models import *
 from google.appengine.api import users
 from google.appengine.ext import deferred
@@ -153,15 +152,12 @@ class Creatorneo(BaseHandler):
 
 def popola_torneo(t_key):
     torneo = t_key.get()
-    lettere = ['a', 'b', 'c', 'de', 'f', 'g', 'h', 'i', 'l', 'm',
-    'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'z']
     _squadre = ['roma', 'juve', 'lazio', 'milan', 'inter', 'samp',
     'genoa', 'catania', 'bari', 'atalanta', 'andria', 'barletta', 'chievo',
     'pescara', 'fiorentina', 'palermo', 'napoli', 'siena', 'udine', 'bologna']
     n = 0
     while n < 20:
         ten = Tennisti()
-        ten.nome = ''.join(random.sample(lettere, 5))
         ten.squadra = _squadre[n]
         ten.torneo = torneo.key
         ten.put()
