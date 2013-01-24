@@ -11,14 +11,15 @@ class Tornei(ndb.Expando):
     anno = ndb.IntegerProperty()
     match_tot = ndb.IntegerProperty()
 
-    def disputate(self):
+    @property
+    def disputati(self):
         return Match.query(Match.torneo == self.key,
                            Match.disputa == True).count()
 
     @property
     def tennisti_set(self):
-        qry = Tennisti.query(Tennisti.torneo == self.key)
-        return qry.order(-Tennisti.punti, Tennisti.disputati)
+        q = Tennisti.query(Tennisti.torneo == self.key)
+        return q.order(-Tennisti.punti, Tennisti.disputati)
 
     @property
     def match_set(self):
@@ -26,15 +27,15 @@ class Tornei(ndb.Expando):
 
     @property
     def andata(self):
-        q = Giornate.query(Giornate.torneo == self.key)
-        q = q.filter(Giornate.turno == 'andata')
+        q = Giornate.query(Giornate.torneo == self.key,
+                           Giornate.turno == 'andata')
         q = q.order(Giornate.giornata)
         return q
 
     @property
     def ritorno(self):
-        q = Giornate.query(Giornate.torneo == self.key)
-        q = q.filter(Giornate.turno == 'ritorno')
+        q = Giornate.query(Giornate.torneo == self.key,
+                           Giornate.turno == 'ritorno')
         q = q.order(Giornate.giornata)
         return q
 
@@ -94,8 +95,9 @@ class Giornate(ndb.Expando):
         return Match.query(Match.giornata == self.key)
 
     @property
-    def disputate(self):
-        return Match.query(Match.giornata == self.key, Match.disputa == True).count()
+    def disputati(self):
+        return Match.query(Match.giornata == self.key,
+                           Match.disputa == True).count()
 
 
 class Match(ndb.Expando):

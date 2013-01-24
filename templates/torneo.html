@@ -17,7 +17,7 @@
       {% for g in t.andata %}
         <tr>
           <td>{{g.giornata}}</td>
-          <td>{{g.disputate}}/10</td>
+          <td>{{g.disputati}}/10</td>
           <td><a class="btn btn-link btn-mini" href="/g?id={{g.key.id()}}" > apri</a></td>
         </tr>
       {% endfor %}
@@ -39,7 +39,7 @@
       {% for g in t.ritorno %}
         <tr>
           <td>{{g.giornata}}</td>
-          <td>{{g.disputate}}/10</td>
+          <td>{{g.disputati}}/10</td>
           <td><a class="btn btn-link btn-mini" href="/g?id={{g.key.id()}}" > apri</a></td>
         </tr>
       {% endfor %}

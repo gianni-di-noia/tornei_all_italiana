@@ -8,7 +8,7 @@
   <tbody>
   {% for i in tornei %}
   <tr>
-    <td>{{i.organiz}} - {{i.anno}} - match: {{i.disputati}}/{{i.match_tot}}</td>
+    <td>{{i.organiz}} - {{i.anno}} - match: {{i.disputati}}/{{i.match_set.count()}}</td>
     <td> <a class="btn" href="/t?id={{i.key.id()}}" ><i class="icon-calendar"></i> Giornate</a> </td>
     <td> <a class="btn" href="/c?id={{i.key.id()}}" ><i class="icon-tasks"></i> Classifica</a> </td>
     <td> <a class="btn" href="/k?id={{i.key.id()}}" ><i class="icon-user"></i> Tennisti</a> </td>
