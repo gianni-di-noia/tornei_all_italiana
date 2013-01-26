@@ -17,11 +17,11 @@ handlers:
   upload: static/favicon\.ico
   mime_type: image/x-icon
 
-- url: /blog.*
-  script: blog.app
+- url: /bacheca.*
+  script: bacheca.app
 
-- url: /blog/admin/.*
-  script: blog.app
+- url: /bacheca/admin/.*
+  script: bacheca.app
   login: admin
 
 - url: /admin/.*

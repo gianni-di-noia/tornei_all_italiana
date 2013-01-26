@@ -1,12 +1,13 @@
-{% extends "blog/base.html" %}
+{% extends "/common/base.html" %}
 {% block content %}
+<div class="container-narrow">
 <div class="row-fluid">
   <div class="lead text-success">{{p.title}}</div>
   <div>{{p.content}}</div>
   {% if p.href and p.href != 'None' %}
   <small>via {{p.href|urlize(60)}}</small>
   {% endif %}
-  <div>{% include "blog/controls.html" %}</div>
+  <div>{% include "/bacheca/controls.html" %}</div>
   {% if p.comments.get() %}
   <hr>
   {% for c in p.comments %}
@@ -19,31 +20,26 @@
 </div>
 <hr>
 <div class="row-fluid">
-  <form method="post" action="/blog/comment/{{p.id}}" class="form-horizontal">
+  <form method="post" action="/bacheca/comment/{{p.id}}" class="form-horizontal">
     <div class="control-group">
-      <label class="control-label" for="name">name</label>
+      <label class="control-label" for="name">nome</label>
       <div class="controls">
-        <input type="text" name="name" value="name" class="input-block-level">
+        <input type="text" name="name" value="nome" class="input-block-level">
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="url">url</label>
-      <div class="controls">
-        <input type="text" name="url" value="http:\\" class="input-block-level">
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="comment">comment</label>
+      <label class="control-label" for="comment">commento</label>
       <div class="controls">
         <textarea rows="3" name="comment" class="input-block-level"></textarea>
       </div>
     </div>
     <div class="control-group">
       <div class="controls">
-         <button type="submit" class="btn pull-right">send</button>
+         <button type="submit" class="btn pull-right">invia</button>
       </div>
     </div>
   </form>
+</div>
 </div>
 {% endblock %}
 {% block title %} · {{p.title}} {% endblock %}

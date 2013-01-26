@@ -1,64 +1,33 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-import webapp2
-import jinja2
+import base
 from models import *
 from google.appengine.api import users
 from google.appengine.ext import deferred
 
 
-def dtf(value, format='%d-%m-%Y'):
-    return value.strftime(format)
-
-jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader('templates'))
-jinja_environment.filters['dtf'] = dtf
-
-
-class BaseHandler(webapp2.RequestHandler):
-    def generate(self, template_name, template_values={}):
-        tornei = Tornei.query()
-        if users.get_current_user():
-            url = users.create_logout_url("/")
-            login = 'Esci'
-        else:
-            url = users.create_login_url("/")
-            login = 'Entra'
-        values = {
-            'url': url,
-            'login': login,
-            'tornei': tornei,
-            'admin': users.is_current_user_admin(),
-            'brand': "Tornei"
-            }
-        values.update(template_values)
-        template = jinja_environment.get_template(template_name)
-        self.response.write(template.render(values))
-
-
-class MainPage(BaseHandler):
+class MainPage(base.BaseHandler):
     def get(self):
-        matchs = Match.query(Match.disputa == True)
-        matchs = matchs.order(-Match.timestamp)
-        matchs = matchs.fetch(10)
-        self.generate('home.html', {'matchs': matchs})
+        tornei = Tornei.query()
+        matchs = Match.query(Match.disputa == True).order(-Match.timestamp).fetch(10)
+        posts = Post.query(Post.published == True).order(-Post.create).fetch(5)
+        self.generate('home.html', {'matchs': matchs, 'posts': posts, 'tornei': tornei})
 
 
-class TorneoPage(BaseHandler):
+class TorneoPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         self.generate('torneo.html', {'t': torneo})
 
 
-class Classifica(BaseHandler):
+class Classifica(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         self.generate('classifica.html', {'t': torneo})
 
 
-class GiornataPage(BaseHandler):
+class GiornataPage(base.BaseHandler):
     def get(self):
         giornata = Giornate.get_by_id(int(self.request.get('id')))
         pq = Giornate.query(Giornate.giornata == (giornata.giornata - 1))
@@ -83,7 +52,7 @@ class GiornataPage(BaseHandler):
             self.generate('g_view.html', values)
 
 
-class EditTennisti(BaseHandler):
+class EditTennisti(base.BaseHandler):
     def post(self):
         t = Tennisti.get_by_id(int(self.request.get('id')))
         t.squadra = self.request.get('squadra')
@@ -94,7 +63,7 @@ class EditTennisti(BaseHandler):
         self.redirect(self.request.referer)
 
 
-class CheckPage(BaseHandler):
+class CheckPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         if users.is_current_user_admin():
@@ -103,7 +72,7 @@ class CheckPage(BaseHandler):
             self.generate('check.html', {'t': torneo})
 
 
-class Checknum(BaseHandler):
+class TennistiPage(base.BaseHandler):
     def post(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         telefono = self.request.get('telefono')
@@ -115,7 +84,7 @@ class Checknum(BaseHandler):
             self.redirect('/')
 
 
-class AddRisultato(webapp2.RequestHandler):
+class AddRisultato(base.BaseHandler):
     def post(self):
         incasa1 = self.request.get('incasa1')
         ospite1 = self.request.get('ospite1')
@@ -133,12 +102,7 @@ class AddRisultato(webapp2.RequestHandler):
         self.redirect(self.request.referer)
 
 
-class Admin(BaseHandler):
-    def get(self):
-        self.generate('admin.html', {})
-
-
-class Creatorneo(BaseHandler):
+class Creatorneo(base.BaseHandler):
     def post(self):
         torneo = Tornei()
         torneo.organiz = self.request.get('organiz')
@@ -222,19 +186,18 @@ def validate(x):
     return int(x)
 
 
-debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
+import webapp2
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/c', Classifica),
     ('/t', TorneoPage),
     ('/g', GiornataPage),
     ('/k', CheckPage),
-    ('/checknum', Checknum),
+    ('/tennisti', TennistiPage),
     ('/add', AddRisultato),
     ('/edit_t', EditTennisti),
-    ('/admin', Admin),
     ('/admin/creatorneo', Creatorneo),
-    ], debug=debug)
+    ], debug=base.debug)
 
 
 def main():

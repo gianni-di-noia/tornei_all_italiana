@@ -33,11 +33,10 @@ indexes:
   - name: create
     direction: desc
 
-- kind: Post
+- kind: Tennisti
   properties:
-  - name: published
-  - name: tags
-  - name: create
+  - name: torneo
+  - name: disputati
     direction: desc
 
 - kind: Tennisti

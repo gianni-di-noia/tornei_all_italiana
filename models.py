@@ -22,6 +22,11 @@ class Tornei(ndb.Expando):
         return q.order(-Tennisti.punti, Tennisti.disputati)
 
     @property
+    def tennisti_admin(self):
+        q = Tennisti.query(Tennisti.torneo == self.key)
+        return q.order(-Tennisti.disputati)
+
+    @property
     def match_set(self):
         return Match.query(Match.torneo == self.key)
 
@@ -154,3 +159,32 @@ class Match(ndb.Expando):
         incasa = w1[0] + w2[0]
         ospite = w1[1] + w2[1]
         return [incasa, ospite]
+
+
+class Post(ndb.Model):
+    title = ndb.StringProperty()
+    href = ndb.StringProperty()
+    content = ndb.TextProperty()
+    create = ndb.DateTimeProperty(auto_now_add=True)
+    update = ndb.DateTimeProperty(auto_now=True)
+    published = ndb.BooleanProperty(default=False)
+
+    @property
+    def comments(self):
+        return Comment.query(Comment.post == self.key).order(Comment.create)
+
+    @property
+    def id(self):
+        return self.key.id()
+
+
+class Comment(ndb.Model):
+    post = ndb.KeyProperty(kind=Post)
+    name = ndb.StringProperty(required=True)
+    create = ndb.DateTimeProperty(auto_now_add=True)
+    published = ndb.BooleanProperty(default=True)
+    comment = ndb.TextProperty(required=True)
+
+    @property
+    def id(self):
+        return self.key.id()

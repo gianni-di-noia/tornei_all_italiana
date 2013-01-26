@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "common/base.html" %}
 {% block mynav %} {% include 'mynav.html' %} {% endblock %}
 {% block content %}
 <div class="container-narrow">
@@ -7,18 +7,18 @@
 <caption><b>Partecipanti al torneo</b></caption>
   <thead>
   <tr>
-    <th>Squadra</th><th>Nome</th><th>Tel.</th><th>email</th><th>Punti</th><th>azioni</th>
+    <th>Squadra</th><th>Nome</th><th>Tel.</th><th>email</th><th>giocate</th><th></th>
   </tr>
   </thead>
   <tbody>
-  {% for ten in t.tennisti_set %}
+  {% for ten in t.tennisti_admin %}
   <tr>
     <form action="/edit_t?id={{ ten.key.id() }}" class="form-inline" method="POST" >
     <td><input type="text" value="{{ten.squadra}}" class="input input-small" name="squadra" allowBlank="true"></td>
     <td><input type="text" value="{{ten.nome}}" class="input input-medium" name="nome" allowBlank="true"></td>
     <td><input type="text" value="{{ten.telefono}}" class="input input-small" name="telefono" allowBlank="true"></td>
     <td><input type="text" value="{{ten.email}}" class="input input-medium" name="email" allowBlank="true"></td>
-    <td class="tac">{{ten.punti}}</td>
+    <td class="tac">{{ten.disputati}}</td>
     <td><button type="submit" class="btn"><i class="icon-ok"></i></button></td>
     </form>
   </tr>

@@ -1,17 +1,25 @@
-{% extends "base.html" %}
+{% extends "common/base.html" %}
 {% block mynav %} {% include 'mynav.html' %} {% endblock %}
 {% block content %}
 <div class="container-narrow">
 <div class="row-fluid">
+  <ul class="pager">
+    {%if prev %}
+    <li class="previous"> <a href="/g?id={{prev}}">&larr; {{ g.giornata - 1 }}a giornata</a> </li>
+    {%endif%}
+    <li><b>{{ g.giornata }}a giornata</b></li>
+    {%if next %}
+    <li class="next"> <a href="/g?id={{next}}">{{ g.giornata + 1 }}a giornata &rarr;</a> </li>
+    {%endif%}
+  </ul>
   <table class="table table-condensed">
-    <caption><b>Giornata {{ g.giornata }} </b></caption>
     <thead>
       <th>In casa</th>
       <th class="tac">Punti</th>
       <th>Ospite</th>
-      <th>1 set</th>
-      <th>2 set</th>
-      <th>Azioni</th>
+      <th class="tac">1 set</th>
+      <th class="tac">2 set</th>
+      <th></th>
     </thead>
     <tbody>
     {% for m in g.match_set %}
@@ -38,18 +46,6 @@
     {% endfor %}
     </tbody>
   </table>
-  <ul class="pager">
-    {%if prev %}
-    <li class="previous">
-      <a href="/g?id={{prev}}">&larr; giornata {{ g.giornata - 1 }}</a>
-    </li>
-    {%endif%}
-    {%if next %}
-    <li class="next">
-      <a href="/g?id={{next}}">giornata {{ g.giornata + 1 }} &rarr;</a>
-    </li>
-    {%endif%}
-  </ul>
 </div>
 </div>
 

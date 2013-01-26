@@ -1,0 +1,11 @@
+<small>
+  <strong>{{p.create|dtf}}</strong> ·
+  <strong>{{p.comments.count()}} commenti</strong> ·
+</small>
+<small class="pull-right">
+  {% if admin %}
+  <a href="/bacheca/admin/edit/{{p.id}}" class="text-info">modifica</a>
+  <a href="/bacheca/admin/publish/{{p.id}}" class="text-error">
+    {% if p.published == True %} rendi bozza {% else %} pubblica {% endif %}</a>
+  {% endif %}
+</small>

@@ -1,0 +1,57 @@
+{% extends "common/base.html" %}
+{% block content %}
+<div class="container-narrow">
+<div class="row-fluid">
+  <div class="span9">
+  <form method="post" action="../edit/{{p.id}}">
+    <label>Titolo</label>
+    <div class="controls">
+      <input type="text" name="title" class="input-block-level" value="{{p.title}}"/>
+    </div>
+    <label>Contenuto</label>
+    <div class="controls">
+      <textarea rows="15" name="content" class="input-block-level">{{p.content}}</textarea>
+    </div>
+    <div class="controls">
+      <button type="submit" class="btn pull-right">Salva</button>
+    </div>
+  </form>
+  </div>
+  <div class="span3">
+    <dl>
+      <dt>
+        <dd>
+          <a href="/bacheca/post/{{ p.id }}" target="_blank"><b>anteprima</b></a>
+          <a href="/bacheca/admin/publish/{{p.id}}" class="text-success">pubblica</a>
+      <hr>
+      <dt>paragrafo</dt>
+        <dd> &lt;p&gt;testo&lt;/p&gt; </dd>
+      <dt><i>a capo</i></dt>
+        <dd> &lt;br&gt;</dd>
+      <dt><b>Grassetto</b></dt>
+        <dd> &lt;b&gt;testo&lt;/b&gt; </dd>
+      <dt><u>sottolineato</u></dt>
+        <dd> &lt;u&gt;testo&lt;/u&gt; </dd>
+      <dt><i>Italics</i></dt>
+        <dd> &lt;i&gt;testo&lt;/i&gt; </dd>
+    </dl>
+  </div>
+</div>
+<hr>
+<div class="row-fluid">
+  <div class="span5">
+    <label>carica un'immagine</label>
+    <form action="{{upload_url}}" method="POST" enctype="multipart/form-data">
+      <input type="file" name="file">
+      <input class="btn" type="submit" name="submit" value="Upload">
+    </form>
+  </div>
+  <div class="span7">
+    <label>Copia e incolla questo codice nel post</label>
+    <textarea class="input-block-level" rows="5">{{code}}</textarea>
+  </div>
+</div>
+<hr>
+<dd><a href="/bacheca/admin/delete/{{p.id}}" class="text-error">elimina</a> <b>(attentione! non è recuperabile)<b>
+</div>
+{% endblock %}
