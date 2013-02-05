@@ -15,9 +15,8 @@ class FeedHandler(base.BaseHandler):
         'posts': posts.fetch(10),
         'update': posts.get().create,
         }
-        template = base.jinja_environment.get_template('bacheca/atom.xml')
         self.response.headers['Content-Type'] = 'application/xml'
-        self.response.write(template.render(values))
+        self.generate('bacheca/atom.xml', values)
 
 
 class HomePage(base.BaseHandler):
@@ -59,11 +58,8 @@ class PostPage(base.BaseHandler):
 
 class NewPost(base.BaseHandler):
     def get(self):
-        p = Post()
-        p.title = 'title'
-        p.content = 'content'
-        p.put()
-        self.redirect('/bacheca/admin/edit/%s' % p.id)
+        p_key = Post(title='title', content='content').put()
+        self.redirect('/bacheca/admin/edit/%s' % p_key.id())
 
 
 class EditPost(base.BaseHandler):
@@ -87,10 +83,9 @@ class EditPost(base.BaseHandler):
 class AddComment(base.BaseHandler):
     def post(self, post):
         p = Post.get_by_id(int(post))
-        c = Comment(post=p.key,
-                    name=self.request.get('name'),
-                    comment=self.request.get('comment'))
-        c.put()
+        Comment(post=p.key,
+                name=self.request.get('name'),
+                comment=self.request.get('comment')).put()
         self.redirect('/bacheca/post/%s' % p.id)
 
 
@@ -141,8 +136,5 @@ app = webapp2.WSGIApplication([
     ]), ], debug=base.debug)
 
 
-def bacheca():
-    app.run()
-
 if __name__ == "__main__":
-    bacheca()
+    app.run()

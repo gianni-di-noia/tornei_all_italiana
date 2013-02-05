@@ -16,23 +16,11 @@ config = {
 
 debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
 
-
-def dtf(value, format='%d/%m/%Y %H:%M'):
-    return value.strftime(format)
-
-
-def dtfeed(value):
-    return value.isoformat() + 'Z'
-
-
-def dtitem(value, format='%Y-%m-%d'):
-    return value.strftime(format)
-
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader('templates'))
-jinja_environment.filters['dtf'] = dtf
-jinja_environment.filters['dtfeed'] = dtfeed
-jinja_environment.filters['dtitem'] = dtitem
+jinja_environment.filters['dtf'] = lambda value: value.strftime('%d-%m-%Y %H:%M')
+jinja_environment.filters['dtfeed'] = lambda value: value.isoformat() + 'Z'
+jinja_environment.filters['dtitem'] = lambda value: value.strftime('%d-%m-%Y')
 
 
 class BaseHandler(webapp2.RequestHandler):

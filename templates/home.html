@@ -8,9 +8,18 @@
     {% for i in tornei %}
     <tr>
       <td>{{i.organiz}} - {{i.anno}} - match: {{i.disputati}}/{{i.match_set.count()}}</td>
-      <td> <a class="btn btn-mini" href="/t?id={{i.key.id()}}" ><i class="icon-calendar"></i> Giornate</a> </td>
-      <td> <a class="btn btn-mini" href="/c?id={{i.key.id()}}" ><i class="icon-tasks"></i> Classifica</a> </td>
-      <td> <a class="btn btn-mini" href="/k?id={{i.key.id()}}" ><i class="icon-user"></i> Tennisti</a> </td>
+      <td>
+        <a class="btn btn-link" href="/t?id={{i.key.id()}}" >
+        <i class="icon-calendar"></i> Giornate</a>
+      </td>
+      <td>
+        <a class="btn btn-link" href="/c?id={{i.key.id()}}" >
+        <i class="icon-tasks"></i> Classifica</a>
+      </td>
+      <td>
+        <a class="btn btn-link" href="/k?id={{i.key.id()}}" >
+        <i class="icon-user"></i> Tennisti</a>
+      </td>
     </tr>
     {% endfor %}
     </tbody>
@@ -23,9 +32,12 @@
   <table class="table table-condensed">
     <thead>
       <tr>
-        <td>bacheca</td>
+        <td>bacheca - <a href="/bacheca/atom">feed</a></td>
         {% if admin %}
-        <td class="tar"><a class="btn btn-mini" href="/bacheca/admin/new" >nuovo post</a></td>
+        <td class="tar">
+          <a href="/bacheca/admin/" >bozze</a> -
+          <a href="/bacheca/admin/new" >nuovo</a>
+        </td>
         {% endif %}
       </tr>
     </thead>
@@ -33,6 +45,10 @@
     {% for p in posts %}
     <tr><td colspan="2"><a href="/bacheca/post/{{p.id}}">{{p.title|truncate(30)}}</a></td></tr>
     {% endfor %}
+    {% set n_posts = 11 - posts|length %}
+    {%- for column in items|slice(n_posts) %}
+    <tr style="visibility:hidden"> <td colspan="2">-</td> </tr>
+    {%- endfor %}
   </tbody>
   </table>
 </div>
@@ -48,6 +64,10 @@
       <td>{{m.incasa2}} - {{m.ospite2}}</td>
     </tr>
     {% endfor %}
+    {% set n_matchs = 11 - matchs|length %}
+    {%- for column in items|slice(n_matchs) %}
+    <tr style="visibility:hidden"> <td colspan="4">-</td> </tr>
+    {%- endfor %}
   </tbody>
   </table>
 </div>

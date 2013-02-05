@@ -11,7 +11,7 @@ class MainPage(base.BaseHandler):
     def get(self):
         tornei = Tornei.query()
         matchs = Match.query(Match.disputa == True).order(-Match.timestamp).fetch(10)
-        posts = Post.query(Post.published == True).order(-Post.create).fetch(5)
+        posts = Post.query(Post.published == True).order(-Post.create).fetch(10)
         self.generate('home.html', {'matchs': matchs, 'posts': posts, 'tornei': tornei})
 
 
@@ -32,14 +32,8 @@ class GiornataPage(base.BaseHandler):
         giornata = Giornate.get_by_id(int(self.request.get('id')))
         pq = Giornate.query(Giornate.giornata == (giornata.giornata - 1))
         nq = Giornate.query(Giornate.giornata == (giornata.giornata + 1))
-        if pq.get():
-            prev = pq.get().key.id()
-        else:
-            prev = None
-        if nq.get():
-            next = nq.get().key.id()
-        else:
-            next = None
+        prev = pq.get().key.id() if pq.get() else None
+        next = nq.get().key.id() if nq.get() else None
         values = {
         'g': giornata,
         'next': next,
@@ -66,8 +60,11 @@ class EditTennisti(base.BaseHandler):
 class CheckPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
+        telefono = self.request.cookies.get('telefono')
         if users.is_current_user_admin():
             self.generate('ten_edit.html', {'t': torneo})
+        elif telefono is not None:
+            self.generate('ten_view.html', {'t': torneo})
         else:
             self.generate('check.html', {'t': torneo})
 
@@ -79,6 +76,7 @@ class TennistiPage(base.BaseHandler):
         q = Tennisti.query(Tennisti.torneo == torneo.key,
                            Tennisti.telefono == telefono)
         if q.get():
+            self.response.set_cookie('telefono', str(telefono))
             self.generate('ten_view.html', {'t': torneo})
         else:
             self.redirect('/')
@@ -104,38 +102,29 @@ class AddRisultato(base.BaseHandler):
 
 class Creatorneo(base.BaseHandler):
     def post(self):
-        torneo = Tornei()
-        torneo.organiz = self.request.get('organiz')
-        torneo.numero = int(self.request.get('numero'))
-        torneo.nome = self.request.get('nome')
-        torneo.anno = int(self.request.get('anno'))
-        torneo.put()
-        deferred.defer(popola_torneo, torneo.key, _queue='worker')
+        torneo_key = Tornei(organiz=self.request.get('organiz'),
+                            numero=int(self.request.get('numero')),
+                            nome=self.request.get('nome'),
+                            anno=int(self.request.get('anno'))).put()
+        deferred.defer(popola_torneo, torneo_key, _queue='worker')
         self.redirect(self.request.referer)
 
 
-def popola_torneo(t_key):
-    torneo = t_key.get()
-    _squadre = ['roma', 'juve', 'lazio', 'milan', 'inter', 'samp',
-    'genoa', 'catania', 'bari', 'atalanta', 'andria', 'barletta', 'chievo',
-    'pescara', 'fiorentina', 'palermo', 'napoli', 'siena', 'udine', 'bologna']
+def popola_torneo(torneo_key):
+    _squadre = ['roma', 'juve', 'lazio', 'milan', 'inter', 'samp', 'genoa', 'catania', 'bari', 'atalanta', 'andria', 'barletta', 'chievo', 'pescara', 'fiorentina', 'palermo', 'napoli', 'siena', 'udine', 'bologna']
     n = 0
     while n < 20:
-        ten = Tennisti()
-        ten.squadra = _squadre[n]
-        ten.torneo = torneo.key
-        ten.put()
+        Tennisti(squadra=_squadre[n], torneo=torneo_key).put()
         n += 1
-    tqry = Tennisti.query(Tennisti.torneo == torneo.key)
 
+    tqry = Tennisti.query(Tennisti.torneo == torneo_key)
     tennisti = [t.key for t in tqry]
+
     if not len(tennisti) % 2 == 0:
-        ten = Tennisti(squadra='riposo',
-                       torneo=torneo.key)
-        ten.put()
-        tennisti.append(ten.key)
-    deferred.defer(Berger, tennisti, torneo.key, 0, _queue='worker')
-    deferred.defer(Berger, tennisti, torneo.key, 1, _queue='worker')
+        ten_key = Tennisti(squadra='riposo', torneo=torneo_key).put()
+        tennisti.append(ten_key)
+    deferred.defer(Berger, tennisti, torneo_key, 0, _queue='worker')
+    deferred.defer(Berger, tennisti, torneo_key, 1, _queue='worker')
 
 
 def Berger(tennisti, torneo_key, turno):
@@ -143,24 +132,21 @@ def Berger(tennisti, torneo_key, turno):
 
     i = 0
     while i < len(tennisti) - 1:
-        gr = Giornate(giornata=i + 1,
-                      torneo=torneo_key,
-                      turno=_turno)
-        gr.put()
+        gr_key = Giornate(giornata=i + 1, torneo=torneo_key, turno=_turno).put()
 
         j = 0
         while j < (len(tennisti) / 2):
             if i % 2 != turno:
                 deferred.defer(crea_match,
                                torneo_key,
-                               gr.key,
+                               gr_key,
                                tennisti[j],
                                tennisti[len(tennisti) - 1 - j],
                                _queue='worker')
             else:
                 deferred.defer(crea_match,
                                torneo_key,
-                               gr.key,
+                               gr_key,
                                tennisti[len(tennisti) - 1 - j],
                                tennisti[j],
                                _queue='worker')
@@ -170,12 +156,7 @@ def Berger(tennisti, torneo_key, turno):
 
 
 def crea_match(torneo_key, g_key, t1_key, t2_key):
-    match = Match(torneo=torneo_key,
-                  giornata=g_key,
-                  incasa=t1_key,
-                  ospite=t2_key
-                  )
-    match.put()
+    Match(torneo=torneo_key, giornata=g_key, incasa=t1_key, ospite=t2_key).put()
 
 
 def validate(x):
@@ -200,9 +181,5 @@ app = webapp2.WSGIApplication([
     ], debug=base.debug)
 
 
-def main():
-    app.run()
-
-
 if __name__ == "__main__":
-    main()
+    app.run()
