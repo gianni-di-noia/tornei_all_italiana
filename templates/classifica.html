@@ -8,22 +8,22 @@
     <thead>
     <tr>
       <th>Squadra</th>
-      <th class="tac">Punti</th>
-      <th class="tac">Giocate</th>
-      <th class="tac">Vinte</th>
-      <th class="tac">Pareggiate</th>
-      <th class="tac">Perse</th>
+      <th class="text-center">Punti</th>
+      <th class="text-center">Giocate</th>
+      <th class="text-center">Vinte</th>
+      <th class="text-center">Pareggiate</th>
+      <th class="text-center">Perse</th>
     </tr>
     </thead>
     <tbody>
       {% for ten in t.tennisti_set %}
       <tr>
         <td>{{ten.squadra}}</td>
-        <td class="tac"><b>{{ten.punti}}</b></td>
-        <td class="tac"><b>{{ten.disputati}}</b></td>
-        <td class="tac">{{ten.vinti}}</td>
-        <td class="tac">{{ten.pareggiati}}</td>
-        <td class="tac">{{ten.persi}}</td>
+        <td class="text-center"><b>{{ten.punti}}</b></td>
+        <td class="text-center"><b>{{ten.disputati}}</b></td>
+        <td class="text-center">{{ten.vinti}}</td>
+        <td class="text-center">{{ten.pareggiati}}</td>
+        <td class="text-center">{{ten.persi}}</td>
       </tr>
       {% endfor %}
       <tr style="visibility:hidden">

@@ -15,10 +15,10 @@
   <table class="table table-condensed">
     <thead>
       <th>In casa</th>
-      <th class="tac">Punti</th>
+      <th class="text-center">Punti</th>
       <th>Ospite</th>
-      <th class="tac">1 set</th>
-      <th class="tac">2 set</th>
+      <th class="text-center">1 set</th>
+      <th class="text-center">2 set</th>
       <th></th>
     </thead>
     <tbody>
@@ -30,7 +30,7 @@
     <tr>
     {%endif%}
       <td><b>{{m.incasa.get().squadra}}</b> <br> {{m.incasa.get().nome}}</td>
-      <td class="tac"><b>{{m.incasaP}} - {{m.ospiteP}}</b></td>
+      <td class="text-center"><b>{{m.incasaP}} - {{m.ospiteP}}</b></td>
       <td><b>{{m.ospite.get().squadra}}</b> <br> {{m.ospite.get().nome}}</td>
       <td>
         <input type="text" value="{{m.incasa1}}" class="input input-mini" name="incasa1" allowBlank="true">
