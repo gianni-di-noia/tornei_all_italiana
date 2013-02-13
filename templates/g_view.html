@@ -1,4 +1,4 @@
-{% extends "common/base.html" %}
+{% extends "base.html" %}
 {% block mynav %} {% include 'mynav.html' %} {% endblock %}
 {% block content %}
 <div class="container-narrow">
@@ -6,7 +6,7 @@
   <table class="table table-condensed">
     <caption><b>Giornata {{ g.giornata }}</b></caption>
     <thead>
-    <tr class="">
+    <tr>
       <th>In casa</th>
       <th>Punti</th>
       <th>Ospite</th>
@@ -19,7 +19,7 @@
     {% if m.disputa == True %}
     <tr class="success">
     {% else %}
-    <tr class="">
+    <tr>
     {%endif%}
       <td><b>{{m.incasa.get().squadra}}</b></td>
       <td>{{m.incasaP}} - {{m.ospiteP}}</td>
