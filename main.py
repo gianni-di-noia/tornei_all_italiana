@@ -34,12 +34,7 @@ class GiornataPage(base.BaseHandler):
         nq = Giornate.query(Giornate.giornata == (giornata.giornata + 1))
         prev = pq.get().key.id() if pq.get() else None
         next = nq.get().key.id() if nq.get() else None
-        values = {
-        'g': giornata,
-        'next': next,
-        'prev': prev,
-        't': giornata.torneo.get()
-        }
+        values = {'g': giornata, 'next': next, 'prev': prev, 't': giornata.torneo.get()}
         if users.is_current_user_admin():
             self.generate('g_edit.html', values)
         else:
@@ -60,44 +55,38 @@ class EditTennisti(base.BaseHandler):
 class CheckPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
-        telefono = self.request.cookies.get('telefono')
-        if users.is_current_user_admin():
-            self.generate('ten_edit.html', {'t': torneo})
-        elif telefono is not None:
-            self.generate('ten_view.html', {'t': torneo})
-        else:
-            self.generate('check.html', {'t': torneo})
+        self.generate('check.html', {'t': torneo})
 
     def post(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         telefono = self.request.get('telefono')
-        q = Tennisti.query(Tennisti.torneo == torneo.key,
-                           Tennisti.telefono == telefono)
-        if q.get():
+        if torneo.check(telefono):
             self.response.set_cookie('telefono', str(telefono))
         self.redirect('/')
 
 
 class TennistiPage(base.BaseHandler):
-    def post(self):
+    def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
+        if users.is_current_user_admin():
+            self.generate('ten_edit.html', {'t': torneo})
         telefono = self.request.cookies.get('telefono')
-        if telefono is not None:
-            self.generate('personale.html', {'t': torneo})
+        if torneo.check(telefono):
+            self.generate('ten_view.html', {'t': torneo})
         else:
-            self.generate('check.html', {'t': torneo})
+            self.redirect('/k?id=' + str(torneo.key.id()))
 
 
 class PersonalePage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         telefono = self.request.cookies.get('telefono')
-        if telefono is not None:
+        if torneo.check(telefono):
             tu = Tennisti.query(Tennisti.torneo == torneo.key,
                                 Tennisti.telefono == telefono).get()
             self.generate('personale.html', {'tu': tu, 't': torneo})
         else:
-            self.generate('check.html', {'t': torneo})
+            self.redirect('/k?id=' + str(torneo.key.id()))
 
 
 class AddRisultato(base.BaseHandler):

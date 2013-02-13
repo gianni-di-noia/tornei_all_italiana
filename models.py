@@ -11,6 +11,11 @@ class Tornei(ndb.Expando):
     anno = ndb.IntegerProperty()
     match_tot = ndb.IntegerProperty()
 
+    def check(self, telefono):
+        q = Tennisti.query(Tennisti.torneo == self.key,
+                           Tennisti.telefono == telefono)
+        return True if q.get() else False
+
     @property
     def disputati(self):
         return Match.query(Match.torneo == self.key,
