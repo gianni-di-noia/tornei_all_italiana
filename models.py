@@ -34,15 +34,13 @@ class Tornei(ndb.Expando):
     def andata(self):
         q = Giornate.query(Giornate.torneo == self.key,
                            Giornate.turno == 'andata')
-        q = q.order(Giornate.giornata)
-        return q
+        return q.order(Giornate.giornata)
 
     @property
     def ritorno(self):
         q = Giornate.query(Giornate.torneo == self.key,
                            Giornate.turno == 'ritorno')
-        q = q.order(Giornate.giornata)
-        return q
+        return q.order(Giornate.giornata)
 
     @property
     def id(self):
@@ -104,6 +102,13 @@ class Giornate(ndb.Expando):
         return Match.query(Match.giornata == self.key,
                            Match.disputa == True).count()
 
+    def avversario(self, tennista):
+        match = Match.query(Match.giornata == self.key,
+                           ndb.OR(Match.ospite == tennista.key,
+                                  Match.incasa == tennista.key)).get()
+        avv = match.ospite.get() if tennista.key == match.incasa else match.incasa.get()
+        return match, avv
+
 
 class Match(ndb.Expando):
     timestamp = ndb.DateTimeProperty(auto_now=True)
@@ -119,6 +124,20 @@ class Match(ndb.Expando):
     ospite2 = ndb.IntegerProperty(default=0)
     incasaP = ndb.IntegerProperty(default=0)
     ospiteP = ndb.IntegerProperty(default=0)
+
+    def responso(self, tennista):
+        if self.disputa:
+            punti = self.incasaP if tennista.key == self.incasa else self.ospiteP
+            responso = 'vittoria' if punti == 3 else 'sconfitta' if punti == 0 else 'pareggio'
+            colore = 'success' if punti == 3 else 'error' if punti == 0 else 'warning'
+            return responso, colore
+        else:
+            return 'invita', ''
+
+    @property
+    def ritorno(self):
+        return Match.query(Match.incasa == self.ospite,
+                           Match.ospite == self.incasa).get()
 
     def _post_put_hook(self, future):
         self.inserisci_punteggi(self.incasa)

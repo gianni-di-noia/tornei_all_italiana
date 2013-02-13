@@ -68,8 +68,6 @@ class CheckPage(base.BaseHandler):
         else:
             self.generate('check.html', {'t': torneo})
 
-
-class TennistiPage(base.BaseHandler):
     def post(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         telefono = self.request.get('telefono')
@@ -77,9 +75,29 @@ class TennistiPage(base.BaseHandler):
                            Tennisti.telefono == telefono)
         if q.get():
             self.response.set_cookie('telefono', str(telefono))
-            self.generate('ten_view.html', {'t': torneo})
+        self.redirect('/')
+
+
+class TennistiPage(base.BaseHandler):
+    def post(self):
+        torneo = Tornei.get_by_id(int(self.request.get('id')))
+        telefono = self.request.cookies.get('telefono')
+        if telefono is not None:
+            self.generate('personale.html', {'t': torneo})
         else:
-            self.redirect('/')
+            self.generate('check.html', {'t': torneo})
+
+
+class PersonalePage(base.BaseHandler):
+    def get(self):
+        torneo = Tornei.get_by_id(int(self.request.get('id')))
+        telefono = self.request.cookies.get('telefono')
+        if telefono is not None:
+            tu = Tennisti.query(Tennisti.torneo == torneo.key,
+                                Tennisti.telefono == telefono).get()
+            self.generate('personale.html', {'tu': tu, 't': torneo})
+        else:
+            self.generate('check.html', {'t': torneo})
 
 
 class AddRisultato(base.BaseHandler):
@@ -117,8 +135,7 @@ def popola_torneo(torneo_key):
         Tennisti(squadra=_squadre[n], torneo=torneo_key).put()
         n += 1
 
-    tqry = Tennisti.query(Tennisti.torneo == torneo_key)
-    tennisti = [t.key for t in tqry]
+    tennisti = Tennisti.query(Tennisti.torneo == torneo_key).fetch(keys_only=True)
 
     if not len(tennisti) % 2 == 0:
         ten_key = Tennisti(squadra='riposo', torneo=torneo_key).put()
@@ -175,6 +192,7 @@ app = webapp2.WSGIApplication([
     ('/g', GiornataPage),
     ('/k', CheckPage),
     ('/tennisti', TennistiPage),
+    ('/tu', PersonalePage),
     ('/add', AddRisultato),
     ('/edit_t', EditTennisti),
     ('/admin/creatorneo', Creatorneo),

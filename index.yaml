@@ -27,6 +27,18 @@ indexes:
   - name: timestamp
     direction: desc
 
+- kind: Match
+  properties:
+  - name: incasa
+  - name: torneo
+  - name: giornata
+
+- kind: Match
+  properties:
+  - name: ospite
+  - name: torneo
+  - name: giornata
+
 - kind: Post
   properties:
   - name: published
