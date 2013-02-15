@@ -2,7 +2,7 @@ application: app-id
 version: dev
 runtime: python27
 api_version: 1
-threadsafe: false
+threadsafe: true
 
 skip_files:
 - ^(.*/)?.*\.py[co]
@@ -32,9 +32,11 @@ handlers:
   script: main.app
 
 libraries:
+- name: webapp2
+  version: latest
 - name: jinja2
   version: latest
-- name: webapp2
+- name: markupsafe
   version: latest
 
 builtins:

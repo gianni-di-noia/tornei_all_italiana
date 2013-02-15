@@ -68,10 +68,10 @@ class CheckPage(base.BaseHandler):
 class TennistiPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
+        telefono = self.request.cookies.get('telefono')
         if users.is_current_user_admin():
             self.generate('ten_edit.html', {'t': torneo})
-        telefono = self.request.cookies.get('telefono')
-        if torneo.check(telefono):
+        elif torneo.check(telefono):
             self.generate('ten_view.html', {'t': torneo})
         else:
             self.redirect('/k?id=' + str(torneo.key.id()))
