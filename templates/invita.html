@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container-narrow">
+  <div class="row-fluid">
+    <label><b>Invita {{avv.nome}} a disputare il vostro match</b></label>
+    <form id="form" method="POST" action="/invita?id={{avv.key.id()}}">
+      <textarea class="input-block-level" name="comment" rows="10">
+Ciao {{avv.nome}},
+sono {{tu.nome}} e come te sono iscritto al torneo {{torneo.numero}} organizzato da {{torneo.organiz}}.
+Quando possiamo incontrarci per il nostro match?
+Il mio numero è {{tu.telefono}} oppure rispondi a questa email.
+A presto,
+{{tu.nome}}
+      </textarea>
+      <span class="help-block">Una copia del messaggio sarà inviata anche a te</span>
+      <button id="form" class="btn pull-right">Invia</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

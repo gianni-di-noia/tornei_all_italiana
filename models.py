@@ -54,8 +54,8 @@ class Tornei(ndb.Expando):
 
 class Tennisti(ndb.Expando):
     nome = ndb.StringProperty(indexed=False)
-    telefono = ndb.StringProperty()
-    email = ndb.StringProperty(indexed=False)
+    telefono = ndb.StringProperty(default='')
+    email = ndb.StringProperty(indexed=False, default='')
     squadra = ndb.StringProperty(indexed=False)
     data = ndb.DateTimeProperty(auto_now=True)
     torneo = ndb.KeyProperty(kind=Tornei)

@@ -3,7 +3,7 @@
 
 import base
 from models import *
-from google.appengine.api import users
+from google.appengine.api import users, mail
 from google.appengine.ext import deferred
 
 
@@ -18,12 +18,14 @@ class MainPage(base.BaseHandler):
 class TorneoPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
+        self.response.set_cookie('torneo', str(torneo.id), max_age=360)
         self.generate('torneo.html', {'t': torneo})
 
 
 class Classifica(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
+        self.response.set_cookie('torneo', str(torneo.id), max_age=360)
         self.generate('classifica.html', {'t': torneo})
 
 
@@ -55,23 +57,24 @@ class EditTennisti(base.BaseHandler):
 class CheckPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
+        self.response.set_cookie('torneo', str(torneo.id), max_age=360)
         self.generate('check.html', {'t': torneo})
 
     def post(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         telefono = self.request.get('telefono')
         if torneo.check(telefono):
-            self.response.set_cookie('telefono', str(telefono))
+            self.response.set_cookie('telefono', str(telefono), max_age=360)
         self.redirect('/')
 
 
 class TennistiPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
-        telefono = self.request.cookies.get('telefono')
+        self.response.set_cookie('torneo', str(torneo.id), max_age=360)
         if users.is_current_user_admin():
             self.generate('ten_edit.html', {'t': torneo})
-        elif torneo.check(telefono):
+        elif self.tu:
             self.generate('ten_view.html', {'t': torneo})
         else:
             self.redirect('/k?id=' + str(torneo.key.id()))
@@ -80,13 +83,28 @@ class TennistiPage(base.BaseHandler):
 class PersonalePage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
-        telefono = self.request.cookies.get('telefono')
-        if torneo.check(telefono):
-            tu = Tennisti.query(Tennisti.torneo == torneo.key,
-                                Tennisti.telefono == telefono).get()
-            self.generate('personale.html', {'tu': tu, 't': torneo})
+        self.response.set_cookie('torneo', str(torneo.id), max_age=360)
+        if self.tu:
+            self.generate('personale.html', {'tu': self.tu, 't': torneo})
         else:
             self.redirect('/k?id=' + str(torneo.key.id()))
+
+
+class Invita(base.BaseHandler):
+    def get(self):
+        avv = Tennisti.get_by_id(int(self.request.get('id')))
+        self.generate('invita.html', {'tu': self.tu, 'avv': avv, 'torneo': self.torneo})
+
+    def post(self):
+        avv = Tennisti.get_by_id(int(self.request.get('id')))
+        subject = "[Torneo di tennis] %s vuole disputare il match" % self.tu.nome
+        body = self.request.get('comment')
+        mail.send_mail(sender='info@circoloitalia.tk',
+                       to=[str(avv.email), str(self.tu.email)],
+                       subject=subject,
+                       reply_to=self.tu.email,
+                       body=body)
+        self.redirect('/tu?id=' + str(self.torneo.id))
 
 
 class AddRisultato(base.BaseHandler):
@@ -118,7 +136,9 @@ class Creatorneo(base.BaseHandler):
 
 
 def popola_torneo(torneo_key):
-    _squadre = ['roma', 'juve', 'lazio', 'milan', 'inter', 'samp', 'genoa', 'catania', 'bari', 'atalanta', 'andria', 'barletta', 'chievo', 'pescara', 'fiorentina', 'palermo', 'napoli', 'siena', 'udine', 'bologna']
+    _squadre = ['roma', 'juve', 'lazio', 'milan', 'inter', 'samp', 'genoa', 'catania', 'bari',
+    'atalanta', 'andria', 'barletta', 'chievo', 'pescara', 'fiorentina', 'palermo', 'napoli',
+    'siena', 'udine', 'bologna']
     n = 0
     while n < 20:
         Tennisti(squadra=_squadre[n], torneo=torneo_key).put()
@@ -181,11 +201,12 @@ app = webapp2.WSGIApplication([
     ('/g', GiornataPage),
     ('/k', CheckPage),
     ('/tennisti', TennistiPage),
+    ('/invita', Invita),
     ('/tu', PersonalePage),
     ('/add', AddRisultato),
     ('/edit_t', EditTennisti),
     ('/admin/creatorneo', Creatorneo),
-    ], debug=base.debug)
+], debug=base.debug)
 
 
 if __name__ == "__main__":

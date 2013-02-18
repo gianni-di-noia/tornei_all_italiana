@@ -16,16 +16,39 @@
     </thead>
     <tbody>
     {% for g in t.andata %}
-    {% set m, avv = g.avversario(tu) %}
+    <tr>
+      {% set m, avv = g.avversario(tu) %}
       <td><b>{{avv.squadra}}</b></td>
       <td>{{avv.nome}}</td>
       <td>{{avv.telefono}}</td>
-    {% set respa, colora = m.responso(tu) %}
-      <td class="text-{{colora}}" >{{respa}}</td>
-    {% set respb, colorb = m.ritorno.responso(tu) %}
-      <td class="text-{{colorb}}" >{{respb}}</td>
+
+      {% set respa, colora = m.responso(tu) %}
+      {% if respa == 'invita' %}
+        {% if tu.email != '' and avv.email != '' %}
+            <td class="text-{{colora}}" >
+              <a href="/invita?id={{avv.key.id()}}" >invita</a>
+            </td>
+        {% else %}
+          <td class="text-{{colora}}" >{{respa}}</td>
+        {% endif%}
+      {% else %}
+        <td class="text-{{colora}}" >{{respa}}</td>
+      {% endif%}
+
+      {% set respb, colorb = m.ritorno.responso(tu) %}
+      {% if respb == 'invita' %}
+        {% if tu.email != '' and avv.email != '' %}
+            <td class="text-{{colorb}}" >
+              <a href="/invita?id={{avv.key.id()}}" >invita</a>
+            </td>
+        {% else %}
+          <td class="text-{{colorb}}" >{{respb}}</td>
+        {% endif%}
+      {% else %}
+        <td class="text-{{colorb}}" >{{respb}}</td>
+      {% endif%}
     </tr>
-    {% endfor %}
+    {% endfor%}
     </tbody>
   </table>
 </div>
