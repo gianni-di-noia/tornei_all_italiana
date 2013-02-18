@@ -57,15 +57,19 @@ class EditTennisti(base.BaseHandler):
 class CheckPage(base.BaseHandler):
     def get(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
+        page = str(self.request.get('page'))
         self.response.set_cookie('torneo', str(torneo.id), max_age=360)
-        self.generate('check.html', {'t': torneo})
+        self.generate('check.html', {'t': torneo, 'page': page})
 
     def post(self):
         torneo = Tornei.get_by_id(int(self.request.get('id')))
         telefono = self.request.get('telefono')
+        page = str(self.request.get('page'))
         if torneo.check(telefono):
             self.response.set_cookie('telefono', str(telefono), max_age=360)
-        self.redirect('/')
+            self.redirect('/%s?id=%s' % (page, str(torneo.id)))
+        else:
+            self.redirect('/')
 
 
 class TennistiPage(base.BaseHandler):
@@ -77,7 +81,7 @@ class TennistiPage(base.BaseHandler):
         elif self.tu:
             self.generate('ten_view.html', {'t': torneo})
         else:
-            self.redirect('/k?id=' + str(torneo.key.id()))
+            self.redirect('/k?id=%s&page=tennisti' % str(torneo.id))
 
 
 class PersonalePage(base.BaseHandler):
@@ -87,7 +91,7 @@ class PersonalePage(base.BaseHandler):
         if self.tu:
             self.generate('personale.html', {'tu': self.tu, 't': torneo})
         else:
-            self.redirect('/k?id=' + str(torneo.key.id()))
+            self.redirect('/k?id=%s&page=tu' % str(torneo.id))
 
 
 class Invita(base.BaseHandler):
@@ -137,8 +141,8 @@ class Creatorneo(base.BaseHandler):
 
 def popola_torneo(torneo_key):
     _squadre = ['roma', 'juve', 'lazio', 'milan', 'inter', 'samp', 'genoa', 'catania', 'bari',
-    'atalanta', 'andria', 'barletta', 'chievo', 'pescara', 'fiorentina', 'palermo', 'napoli',
-    'siena', 'udine', 'bologna']
+                'atalanta', 'andria', 'barletta', 'chievo', 'pescara', 'fiorentina', 'palermo', 'napoli',
+                'siena', 'udine', 'bologna']
     n = 0
     while n < 20:
         Tennisti(squadra=_squadre[n], torneo=torneo_key).put()
