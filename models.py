@@ -109,8 +109,8 @@ class Giornate(ndb.Expando):
 
     def avversario(self, tennista):
         match = Match.query(Match.giornata == self.key,
-                           ndb.OR(Match.ospite == tennista.key,
-                                  Match.incasa == tennista.key)).get()
+                            ndb.OR(Match.ospite == tennista.key,
+                                   Match.incasa == tennista.key)).get()
         avv = match.ospite.get() if tennista.key == match.incasa else match.incasa.get()
         return match, avv
 

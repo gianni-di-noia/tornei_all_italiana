@@ -97,7 +97,10 @@ class PersonalePage(base.BaseHandler):
 class Invita(base.BaseHandler):
     def get(self):
         avv = Tennisti.get_by_id(int(self.request.get('id')))
-        self.generate('invita.html', {'tu': self.tu, 'avv': avv, 'torneo': self.torneo})
+        if self.tu:
+            self.generate('invita.html', {'tu': self.tu, 'avv': avv, 'torneo': self.torneo})
+        else:
+            self.redirect('/')
 
     def post(self):
         avv = Tennisti.get_by_id(int(self.request.get('id')))
@@ -140,9 +143,7 @@ class Creatorneo(base.BaseHandler):
 
 
 def popola_torneo(torneo_key):
-    _squadre = ['roma', 'juve', 'lazio', 'milan', 'inter', 'samp', 'genoa', 'catania', 'bari',
-                'atalanta', 'andria', 'barletta', 'chievo', 'pescara', 'fiorentina', 'palermo', 'napoli',
-                'siena', 'udine', 'bologna']
+    _squadre = ['roma', 'juve', 'lazio', 'milan', 'inter', 'samp', 'genoa', 'catania', 'bari', 'atalanta', 'andria', 'barletta', 'chievo', 'pescara', 'fiorentina', 'palermo', 'napoli', 'siena', 'udine', 'bologna']
     n = 0
     while n < 20:
         Tennisti(squadra=_squadre[n], torneo=torneo_key).put()

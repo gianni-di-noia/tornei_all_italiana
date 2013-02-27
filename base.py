@@ -28,17 +28,17 @@ class BaseHandler(webapp2.RequestHandler):
     @property
     def torneo(self):
         torneo_id = self.request.cookies.get('torneo')
-        return Tornei.get_by_id(int(torneo_id)) if torneo_id != None else False
+        return Tornei.get_by_id(int(torneo_id)) if torneo_id is not None else False
 
     @property
     def tu(self):
         torneo_id = self.request.cookies.get('torneo')
         telefono = self.request.cookies.get('telefono')
-        if torneo_id != None and telefono != None:
+        if torneo_id is not None and telefono is not None:
             torneo = Tornei.get_by_id(int(torneo_id))
             if torneo.check(telefono):
                 return Tennisti.query(Tennisti.torneo == torneo.key,
-                                  Tennisti.telefono == telefono).get()
+                                      Tennisti.telefono == telefono).get()
         else:
             False
 
@@ -48,7 +48,7 @@ class BaseHandler(webapp2.RequestHandler):
             login = 'Esci'
         else:
             url = users.create_login_url("/")
-            login = 'Entra'
+            login = 'Admin'
         values = {
             'url': url,
             'login': login,
