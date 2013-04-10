@@ -7,23 +7,16 @@
     <tbody>
     {% for i in tornei %}
     <tr>
-      <td>{{i.organiz}} - {{i.anno}} - match: {{i.disputati}}/{{i.match_set.count()}}</td>
-      <td>
-        <a class="btn btn-link" href="/t?id={{i.key.id()}}" >
-        <i class="icon-calendar"></i> Giornate</a>
+      <td class="text-left">{{i.organiz}} - {{i.anno}}</td>
+      <td class="text-center">
+        <div class="btn-group">
+          <a class="btn btn-link" href="/t?id={{i.key.id()}}">Giornate</a>
+          <a class="btn btn-link" href="/c?id={{i.key.id()}}">Classifica</a>
+          <a class="btn btn-link" href="/tennisti?id={{i.key.id()}}">Tennisti</a>
+          <a class="btn btn-link" href="/tu?id={{i.key.id()}}">Tu</a>
+        </div>
       </td>
-      <td>
-        <a class="btn btn-link" href="/c?id={{i.key.id()}}" >
-        <i class="icon-tasks"></i> Classifica</a>
-      </td>
-      <td>
-        <a class="btn btn-link" href="/tennisti?id={{i.key.id()}}" >
-        <i class="icon-book"></i> Tennisti</a>
-      </td>
-      <td>
-        <a class="btn btn-link" href="/tu?id={{i.key.id()}}" >
-        <i class="icon-user"></i> Tu</a>
-      </td>
+      <td class="text-right">match: {{i.disputati}}/{{i.match_set.count()}}</td>
     </tr>
     {% endfor %}
     </tbody>
