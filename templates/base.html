@@ -3,13 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{config.title}} {% block title %}{% endblock %}</title>
+  <link rel="alternate" href="/bacheca/atom" type="application/xml">
   <link rel="shortcut icon" href="/static/favicon.ico">
   <link href='http://fonts.googleapis.com/css?family=Antic+Slab' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.min.css">
-  <link rel="stylesheet" href="/static/base.css" type="text/css">
-  <link rel="alternate" href="/bacheca/atom" type="application/xml">
-  <title>{{config.title}} {% block title %}{% endblock %}</title>
+  <style>
+    html {
+    overflow: -moz-scrollbars-vertical;
+    overflow-y: scroll;
+    }
+    body {
+      padding-top: 70px;
+      height:100%;
+    }
+    .container-narrow {
+    margin: 0 auto;
+    max-width: 767px;
+    }
+    
+    h4, body, input, button, select, textarea {
+      font-family: Antic Slab, Arial, serif; font-weight: 400;
+    }
+  </style>
 </head>
 <body>
 <div class="navbar navbar-fixed-top">
